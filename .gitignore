@@ -12,4 +12,6 @@ windows/*
 analysis_options.yaml
 pubspec.lock
 mobile_tp.iml
+.flutter-plugins
+.flutter-plugins-dependencies
 build/*
