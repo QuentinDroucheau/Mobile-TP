@@ -1,0 +1,14 @@
+**/.DS_Store
+.idea/*
+.dart_tool/*
+android/*
+ios/*
+linux/*
+macos/*
+test/*
+web/*
+windows/*
+.metadata
+analysis_options.yaml
+pubspec.lock
+mobile_tp.iml
