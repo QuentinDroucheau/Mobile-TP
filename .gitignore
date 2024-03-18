@@ -12,3 +12,4 @@ windows/*
 analysis_options.yaml
 pubspec.lock
 mobile_tp.iml
+build/*
