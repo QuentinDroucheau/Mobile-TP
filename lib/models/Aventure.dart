@@ -18,4 +18,17 @@ class Aventure {
     };
   }
 
+  int get id => _id;
+
+  String get nomJoueur => _nomJoueur;
+
+  set nomJoueur(String nomJoueur) {
+    _nomJoueur = nomJoueur;
+  }
+
+  @override
+  String toString() {
+    return 'Aventure{id: $_id, nomJoueur: $_nomJoueur}';
+  }
+
 }
