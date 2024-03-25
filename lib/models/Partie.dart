@@ -4,7 +4,7 @@ class Partie {
   late DateTime _dateDebut, _dateFin;
   late int _idAventure, _idNiveau;
 
-  Partie({required int score, required int nbMystere, required int nbEssais, required bool gagnee, required DateTime _dateDebut, required DateTime _dateFin, required int idAventure, required int idNiveau}) {
+  Partie({required int score, required int nbMystere, required int nbEssais, required bool gagnee, required DateTime dateDebut, required DateTime dateFin, required int idAventure, required int idNiveau}) {
     _score = score;
     _nbMystere = nbMystere;
     _nbEssais = nbEssais;
