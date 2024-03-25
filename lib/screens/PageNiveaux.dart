@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ProgressionPage extends StatelessWidget {
+class PageNiveaux extends StatelessWidget {
   final int totalNiveaux;
   final int niveauxCompletes;
 
-  ProgressionPage({required this.totalNiveaux, required this.niveauxCompletes});
+  PageNiveaux({required this.totalNiveaux, required this.niveauxCompletes});
 
   @override
   Widget build(BuildContext context) {
