@@ -1,43 +1,20 @@
-class Niveau {
-  late int _id;
-  late int _palier;
-  late int _idDifficulte;
+class Niveau{
 
-  Niveau({required int palier, required int idDifficulte}){
-    _palier = palier;
-    _idDifficulte = idDifficulte;
-  }
+  final int id;
+  final int palier;
+  final int idDifficulte;
 
-  Niveau.fromMap(Map<String, dynamic> item){
-    _id = item['id'];
-    _palier = item['palier'];
-    _idDifficulte = item['idDifficulte'];
-  }
+  Niveau({
+    required this.id,
+    required this.palier,
+    required this.idDifficulte,
+  });
 
-  Map<String, dynamic> toMap(){
+  Map<String, Object?> toMap(){
     return {
-      'id': _id,
-      'palier': _palier,
-      'idDifficulte': _idDifficulte,
+      'idNiveau': id,
+      'palier': palier,
+      'idDifficulte': idDifficulte,
     };
-  }
-
-  int get id => _id;
-
-  int get palier => _palier;
-
-  set palier(int palier){
-    _palier = palier;
-  }
-
-  int get idDifficulte => _idDifficulte;
-
-  set idDifficulte(int idDifficulte){
-    _idDifficulte = idDifficulte;
-  }
-
-  @override
-  String toString() {
-    return 'Niveau{id: $_id, palier: $_palier, idDifficulte: $_idDifficulte}';
   }
 }
