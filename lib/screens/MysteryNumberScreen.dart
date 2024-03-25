@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mobile_tp/services/SqliteService.dart';
 
 class MysteryNumberScreen extends StatefulWidget{
 
@@ -13,9 +14,11 @@ class _MysteryNumberScreenState extends State<MysteryNumberScreen>{
   String _message = "";
 
   @override
-  void initState() {
-  super.initState();
+  void initState(){
+    super.initState();
     _reset();
+    SqliteService sqliteService = SqliteService();
+    sqliteService.initializeDB();
   }
 
   void _reset() {

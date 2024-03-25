@@ -1,53 +1,23 @@
-class Difficulte {
-  late int _id;
-  late String _nomDifficulte;
-  late int _nbTentatives;
-  late int _valeurMax;
+class Difficulte{
 
-  Difficulte({required String nomDifficulte, required int nbTentatives, required int valeurMax}){
-    _nomDifficulte = nomDifficulte;
-    _nbTentatives = nbTentatives;
-    _valeurMax = valeurMax;
-  }
+  final int id;
+  final int nomDifficulte;
+  final int nbTentatives;
+  final int valeurMax;
 
-  Difficulte.fromMap(Map<String, dynamic> item){
-    _id = item['id'];
-    _nomDifficulte = item['nomDifficulte'];
-    _nbTentatives = item['nbTentatives'];
-    _valeurMax = item['valeurMax'];
-  }
+  Difficulte({
+    required this.id,
+    required this.nomDifficulte,
+    required this.nbTentatives,
+    required this.valeurMax,
+  });
 
   Map<String, dynamic> toMap(){
     return {
-      'id': _id,
-      'nomDifficulte': _nomDifficulte,
-      'nbTentatives': _nbTentatives,
-      'valeurMax': _valeurMax,
+      'idDifficulte': id,
+      'nomDifficulte': nomDifficulte,
+      'nbTentatives': nbTentatives,
+      'valeurMax': valeurMax,
     };
-  }
-
-  int get id => _id;
-
-  String get nomDifficulte => _nomDifficulte;
-
-  set nomDifficulte(String nomDifficulte){
-    _nomDifficulte = nomDifficulte;
-  }
-
-  int get nbTentatives => _nbTentatives;
-
-  set nbTentatives(int nbTentatives){
-    _nbTentatives = nbTentatives;
-  }
-
-  int get valeurMax => _valeurMax;
-
-  set valeurMax(int valeurMax){
-    _valeurMax = valeurMax;
-  }
-
-  @override
-  String toString() {
-    return 'Difficulte{id: $_id, nomDifficulte: $_nomDifficulte, nbTentatives: $_nbTentatives, valeurMax: $_valeurMax}';
   }
 }
