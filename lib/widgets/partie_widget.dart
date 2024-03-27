@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_tp/models/Partie.dart';
 
-class PartieWidget extends StatelessWidget{
+class HistoriqueWidget extends StatelessWidget{
 
   final Partie partie;
 
-  const PartieWidget({
+  const HistoriqueWidget({
     super.key,
     required this.partie
   });

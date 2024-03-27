@@ -9,14 +9,6 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
-      ),
-      body: Center(
-          child: HistoriquePage()
-      ),
-    );
-    return Scaffold(
-      appBar: AppBar(
         title: Text('Le nombre magique'),
         centerTitle: true,
       ),
@@ -36,7 +28,10 @@ class Home extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // page d'historique
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HistoriquePage()),
+                );
               },
               child: Text('Historique'),
             ),

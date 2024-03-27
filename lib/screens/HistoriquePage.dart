@@ -30,7 +30,7 @@ class _HistoriquePageState extends State<HistoriquePage>{
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return PartieWidget(partie: snapshot.data![index]);
+                  return HistoriqueWidget(partie: snapshot.data![index]);
                 },
               );
             }else if (snapshot.hasError) {
