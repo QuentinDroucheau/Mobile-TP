@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tp/screens/MysteryNumberScreen.dart';
+import 'package:mobile_tp/screens/Home.dart';
 
 class MysteryNumberApp extends StatelessWidget{
   
@@ -10,7 +10,7 @@ class MysteryNumberApp extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MysteryNumberScreen(),
+      home: Home(),
     );
   }
 }

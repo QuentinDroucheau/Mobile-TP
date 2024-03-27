@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tp/screens/PageNiveaux.dart';
 
 class PageAventures extends StatefulWidget {
   @override
@@ -29,6 +30,12 @@ class _PageAventuresState extends State<PageAventures> {
                       return Card(
                         child: ListTile(
                           title: Center(child: Text(nom)),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => PageNiveaux(totalNiveaux: 10, niveauxCompletes: 0)),
+                            );
+                          },
                         ),
                       );
                     }).toList(),

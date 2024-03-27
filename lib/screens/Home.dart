@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tp/screens/PageAventures.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -14,7 +15,10 @@ class Home extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               onPressed: () {
-                // page d'aventures
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PageAventures()),
+                );
               },
               child: Text('Jouer'),
             ),
