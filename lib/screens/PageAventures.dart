@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tp/models/Aventure.dart';
 import 'package:mobile_tp/screens/PageNiveaux.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobile_tp/services/AventureDB.dart';
@@ -14,7 +15,7 @@ class PageAventures extends StatefulWidget {
 }
 
 class _PageAventuresState extends State<PageAventures> {
-  List<String> aventures = [];
+  List<Aventure> aventures = [];
   late AventureDB aventureDB;
 
   @override
@@ -27,7 +28,7 @@ class _PageAventuresState extends State<PageAventures> {
   Future<void> loadAventures() async {
     final aventureList = await aventureDB.getAll();
     setState(() {
-      aventures = aventureList.map((aventure) => aventure.nomJoueur).toList();
+      aventures = aventureList;
     });
   }
 
@@ -48,16 +49,17 @@ class _PageAventuresState extends State<PageAventures> {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              ...aventures.map((nom) {
+              ...aventures.map((aventure) {
                 return Card(
                   child: ListTile(
-                    title: Center(child: Text(nom)),
+                    title: Center(child: Text(aventure.nomJoueur)),
                     onTap: () {
+                      print('ID de l\'aventure sélectionnée: ${aventure.id}');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PageNiveaux(
-                                totalNiveaux: 10, niveauxCompletes: 0)),
+                                totalNiveaux: 10, idAventure: aventure.id)),
                       );
                     },
                   ),
@@ -88,10 +90,10 @@ class _PageAventuresState extends State<PageAventures> {
           );
 
           if (nom != null) {
+            final id = await aventureDB.add(nom);
             setState(() {
-              aventures.add(nom);
+              aventures.add(Aventure(id: id, nomJoueur: nom));
             });
-            await aventureDB.add(nom);
           }
         },
         child: Icon(Icons.add),

@@ -6,14 +6,12 @@ class AventureDB {
 
   AventureDB({required this.database});
 
-  Future<void> add(String nom) async {
+  Future<int> add(String nomJoueur) async {
     final db = await database;
-    await db.transaction((txn) async {
-      await txn.rawInsert(
-        'INSERT INTO Aventure(nomJoueur) VALUES(?)',
-        [nom],
-      );
-    });
+    return await db.rawInsert(
+      'INSERT INTO Aventure(nomJoueur) VALUES(?)',
+      [nomJoueur],
+    );
   }
 
   Future<List<Aventure>> getAll() async {
