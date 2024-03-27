@@ -1,5 +1,4 @@
 import 'package:mobile_tp/models/Aventure.dart';
-import 'package:mobile_tp/services/SqliteService.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AventureDB {

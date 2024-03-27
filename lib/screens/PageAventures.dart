@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tp/screens/PageNiveaux.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:mobile_tp/services/SqliteService.dart';
 import 'package:mobile_tp/services/AventureDB.dart';
 
 
