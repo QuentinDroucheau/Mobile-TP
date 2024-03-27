@@ -7,13 +7,13 @@ import 'package:mobile_tp/services/SqliteService.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-void main(){
+void main() async{
   runApp(MysteryNumberApp(),);
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
-  // final database = SqliteService().initializeDB();
-  // NiveauDB niveauDB = NiveauDB(database: database);
-  // niveauDB.add(Niveau(palier: 1, idDifficulte: 1));
+  final database = SqliteService().initializeDB();
+  NiveauDB niveauDB = NiveauDB(database: database);
+  niveauDB.add(Niveau(id:1, palier: 1, idDifficulte: 1));
 
-  // print(await niveauDB.getAll());
+  print(await niveauDB.getAll());
 }
