@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:mobile_tp/screens/Home.dart';
 
 class MysteryNumberApp extends StatelessWidget{
-  
+  final Future<Database> database;
+
+  MysteryNumberApp({Key? key, required this.database}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -10,7 +14,7 @@ class MysteryNumberApp extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: Home(database: database),
     );
   }
 }

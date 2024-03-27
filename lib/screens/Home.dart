@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tp/screens/PageAventures.dart';
+import 'package:sqflite/sqflite.dart';
 
 class Home extends StatelessWidget {
+  final Future<Database> database;
+
+  Home({Key? key, required this.database}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +22,7 @@ class Home extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PageAventures()),
+                  MaterialPageRoute(builder: (context) => PageAventures(database: database)),
                 );
               },
               child: Text('Jouer'),
