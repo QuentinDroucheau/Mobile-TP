@@ -1,10 +1,10 @@
 class Aventure{
 
-  final int id;
+  final int? id;
   final String nomJoueur;
 
   Aventure({
-    required this.id,
+    this.id,
     required this.nomJoueur,
   });
 

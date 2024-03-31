@@ -1,8 +1,8 @@
 class Difficulte{
 
   final int id;
-  final int nomDifficulte;
-  final int nbTentatives;
+  final String nomDifficulte;
+  late int nbTentatives;
   final int valeurMax;
 
   Difficulte({
@@ -15,8 +15,8 @@ class Difficulte{
   Map<String, dynamic> toMap(){
     return {
       'idDifficulte': id,
-      'nomDifficulte': nomDifficulte,
-      'nbTentatives': nbTentatives,
+      'nom': nomDifficulte,
+      'nbTentative': nbTentatives,
       'valeurMax': valeurMax,
     };
   }

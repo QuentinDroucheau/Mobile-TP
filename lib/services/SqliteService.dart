@@ -1,21 +1,15 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
-class SqliteService{
-
-  Future<Database> initializeDB() async{
-    String path = await getDatabasesPath();
-    
-    return openDatabase(
-      join(path, 'database.db'),
-      onCreate: (database, version){
-        database.execute("""
+class SqliteService {
+  Future<void> onCreate(Database db, int version) async {
+    await db.execute("""
           CREATE TABLE Aventure (
             idAventure INTEGER PRIMARY KEY AUTOINCREMENT, 
             nomJoueur TEXT NOT NULL
           )
         """);
-        database.execute("""
+    await db.execute("""
           CREATE TABLE Difficulte (
             idDifficulte INTEGER PRIMARY KEY AUTOINCREMENT, 
             nom TEXT NOT NULL, 
@@ -23,15 +17,17 @@ class SqliteService{
             valeurMax INTEGER NOT NULL
           )
         """);
-        database.execute("""
+    await db.execute("""
           CREATE TABLE Niveau (
             idNiveau INTEGER PRIMARY KEY AUTOINCREMENT, 
             palier INTEGER NOT NULL, 
             idDifficulte INTEGER NOT NULL,
-            FOREIGN KEY(idDifficulte) REFERENCES Difficulte(idDifficulte)
+            idAventure INTEGER NOT NULL,
+            FOREIGN KEY(idDifficulte) REFERENCES Difficulte(idDifficulte),
+            FOREIGN KEY(idAventure) REFERENCES Aventure(idAventure)
           )
         """);
-        database.execute("""
+    await db.execute("""
           CREATE TABLE Partie (
             idPartie INTEGER PRIMARY KEY AUTOINCREMENT, 
             score INTEGER NOT NULL, 
@@ -46,7 +42,7 @@ class SqliteService{
             FOREIGN KEY(idNiveau) REFERENCES Niveau(idNiveau)
           )
         """);
-        return database.execute("""
+    await db.execute("""
           CREATE TABLE Effectuer (
             idAventure INTEGER NOT NULL, 
             idPartie INTEGER NOT NULL, 
@@ -58,8 +54,26 @@ class SqliteService{
             FOREIGN KEY(idNiveau) REFERENCES Niveau(idNiveau)
           )
         """);
+  }
+
+  Future<Database> initializeDB() async {
+    return openDatabase(
+      join(await getDatabasesPath(), 'aventure.db'),
+      onCreate: onCreate,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        // Supprime les tables
+        await db.execute("DROP TABLE IF EXISTS Aventure");
+        await db.execute("DROP TABLE IF EXISTS Difficulte");
+        await db.execute("DROP TABLE IF EXISTS Niveau");
+        await db.execute("DROP TABLE IF EXISTS Partie");
+        await db.execute("DROP TABLE IF EXISTS Effectuer");
+
+        // Recrée les tables
+        await onCreate(db, newVersion);
+
+        print('Database upgraded from $oldVersion to $newVersion');
       },
-      version: 1,
+      version: 3,
     );
   }
 }
