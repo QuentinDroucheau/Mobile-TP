@@ -161,6 +161,22 @@ class _MysteryNumberScreenState extends State<MysteryNumberScreen> {
                 },
                 child: Text('Recommencer'),
               ),
+            if (_message == 'Vous avez trouvé le nombre !')
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PageNiveaux(
+                        totalNiveaux: 10,
+                        idAventure: widget.idAventure,
+                        database: widget.database,
+                      ),
+                    ),
+                  );
+                },
+                child: Text('Retourner à l\'aventure'),
+              ),
           ],
         ),
       ),
