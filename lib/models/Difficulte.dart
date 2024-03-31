@@ -2,7 +2,7 @@ class Difficulte{
 
   final int id;
   final String nomDifficulte;
-  final int nbTentatives;
+  late int nbTentatives;
   final int valeurMax;
 
   Difficulte({

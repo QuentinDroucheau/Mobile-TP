@@ -1,9 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mobile_tp/models/Difficulte.dart';
 import 'package:mobile_tp/models/Effectuer.dart';
+import 'package:mobile_tp/models/Niveau.dart';
 import 'package:mobile_tp/models/Partie.dart';
 import 'package:mobile_tp/screens/PageNiveaux.dart';
 import 'package:mobile_tp/services/EffectuerDB.dart';
+import 'package:mobile_tp/services/NiveauDB.dart';
 import 'package:mobile_tp/services/PartieDB.dart';
 import 'package:mobile_tp/services/SqliteService.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,7 +18,6 @@ class MysteryNumberScreen extends StatefulWidget {
   final int idDifficulte;
   final int idAventure;
   final EffectuerDB effectuerDB;
-
   final VoidCallback onPartieFinished;
 
   MysteryNumberScreen({
@@ -36,21 +38,41 @@ class MysteryNumberScreen extends StatefulWidget {
 class _MysteryNumberScreenState extends State<MysteryNumberScreen> {
   int _mysteryNumber = 0;
   int _number = 0;
-  String _message = "";
+  String _message = "Trouve le nombre";
   late PartieDB partieDB;
+  late NiveauDB niveauDB;
+  bool _gameOver = false;
+  final _controller = TextEditingController();
+  Difficulte? _difficulte;
 
   @override
   void initState() {
     super.initState();
     partieDB = PartieDB(database: widget.database);
-    _reset();
+    niveauDB = NiveauDB(database: widget.database);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _reset();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   void _reset() async {
+    _controller.clear();
     Partie partie = await partieDB.getById(widget.idPartie);
-    _mysteryNumber = partie.nbMystere;
-    _number = 0;
-    _message = 'Trouve le nombre';
+    Niveau niveau = await niveauDB.getById(partie.idNiveau);
+    Difficulte difficulte =
+        await niveauDB.getDifficulteById(niveau.idDifficulte);
+    setState(() {
+      _difficulte = difficulte;
+      _mysteryNumber = partie.nbMystere;
+      _number = 0;
+      _message = 'Trouve le nombre';
+    });
   }
 
   void _check() async {
@@ -58,8 +80,10 @@ class _MysteryNumberScreenState extends State<MysteryNumberScreen> {
       _message = 'Entrez un nombre :';
     } else if (_number < _mysteryNumber) {
       _message = 'Trop petit !';
+      _difficulte!.nbTentatives--;
     } else if (_number > _mysteryNumber) {
       _message = 'Trop grand !';
+      _difficulte!.nbTentatives--;
     } else {
       _message = 'Vous avez trouvé le nombre !';
       Effectuer effectuer = Effectuer(
@@ -78,6 +102,14 @@ class _MysteryNumberScreenState extends State<MysteryNumberScreen> {
 
       widget.onPartieFinished();
     }
+
+    if (_difficulte!.nbTentatives == 0 && _number != _mysteryNumber) {
+      _message = 'Vous avez perdu !';
+      setState(() {
+        _gameOver = true;
+      });
+    }
+
     setState(() {
       _number = 0;
     });
@@ -85,6 +117,9 @@ class _MysteryNumberScreenState extends State<MysteryNumberScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_difficulte == null) {
+      return CircularProgressIndicator();
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Mystery Number'),
@@ -98,7 +133,11 @@ class _MysteryNumberScreenState extends State<MysteryNumberScreen> {
               style: TextStyle(fontSize: 24),
             ),
             SizedBox(height: 20),
+            Text('Difficulté: ${_difficulte?.nomDifficulte}'),
+            Text('Tentatives restantes: ${_difficulte!.nbTentatives}'),
+            SizedBox(height: 20),
             TextField(
+              controller: _controller,
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
@@ -112,28 +151,15 @@ class _MysteryNumberScreenState extends State<MysteryNumberScreen> {
               child: Text('Valider'),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _reset,
-              child: Text('Recommencer'),
-            ),
-            if (_message == 'Vous avez trouvé le nombre !')
-              Column(
-                children: [
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageNiveaux(
-                          totalNiveaux: 10,
-                          idAventure: widget.idAventure,
-                          database: widget.database,
-                        ),
-                      ),
-                    ),
-                    child: Text('Retour'),
-                  ),
-                ],
+            if (_gameOver)
+              ElevatedButton(
+                onPressed: () {
+                  _reset();
+                  setState(() {
+                    _gameOver = false;
+                  });
+                },
+                child: Text('Recommencer'),
               ),
           ],
         ),

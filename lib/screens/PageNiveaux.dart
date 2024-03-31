@@ -64,6 +64,57 @@ class _PageNiveauxState extends State<PageNiveaux> {
     super.dispose();
   }
 
+  void startNewGame(int niveau) async {
+    int idDifficulte;
+    if (niveau <= 3) {
+      idDifficulte = 1;
+    } else if (niveau <= 7) {
+      idDifficulte = 2;
+    } else {
+      idDifficulte = 3;
+    }
+
+    Difficulte difficulte = await difficulteDB.getById(idDifficulte);
+
+    int mysteryNumber = Random().nextInt(difficulte.valeurMax) + 1;
+    Partie nouvellePartie = Partie(
+      score: 0,
+      nbMystere: mysteryNumber,
+      nbEssaisJoueur: difficulte.nbTentatives,
+      gagne: false,
+      dateDebut: DateTime.now(),
+      dateFin: DateTime.now(),
+      idAventure: widget.idAventure,
+      idNiveau: niveau,
+    );
+    int idNouvellePartie = await partieDB.add(nouvellePartie);
+    print(nouvellePartie.toString());
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MysteryNumberScreen(
+          database: widget.database,
+          idPartie: idNouvellePartie,
+          idNiveau: niveau,
+          idDifficulte: idDifficulte,
+          idAventure: widget.idAventure,
+          effectuerDB: effectuerDB,
+          onPartieFinished: () async {
+            await loadLevels();
+            if (nouvellePartie.gagne) {
+              await effectuerDB.add(Effectuer(
+                idAventure: widget.idAventure,
+                idPartie: idNouvellePartie,
+                idNiveau: niveau,
+                complete: true,
+              ));
+            }
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,62 +138,11 @@ class _PageNiveauxState extends State<PageNiveaux> {
                           doneLevels.any((niveauGagne) =>
                               niveauGagne.palier == niveau - 1);
                       return GestureDetector(
-                        onTap: niveauGagne ? null : (niveauPrecedentGagne
-                            ? () async {
-                                int idDifficulte;
-                                if (niveau <= 3) {
-                                  idDifficulte = 1;
-                                } else if (niveau <= 7) {
-                                  idDifficulte = 2;
-                                } else {
-                                  idDifficulte = 3;
-                                }
-
-                                Difficulte difficulte =
-                                    await difficulteDB.getById(idDifficulte);
-
-                                int mysteryNumber =
-                                    Random().nextInt(difficulte.valeurMax) + 1;
-                                Partie nouvellePartie = Partie(
-                                  score: 0,
-                                  nbMystere: mysteryNumber,
-                                  nbEssaisJoueur: difficulte
-                                      .nbTentatives,
-                                  gagne: false,
-                                  dateDebut: DateTime.now(),
-                                  dateFin: DateTime.now(),
-                                  idAventure: widget.idAventure,
-                                  idNiveau: niveau,
-                                );
-                                int idNouvellePartie =
-                                    await partieDB.add(nouvellePartie);
-                                print(nouvellePartie.toString());
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MysteryNumberScreen(
-                                      database: widget.database,
-                                      idPartie: idNouvellePartie,
-                                      idNiveau: niveau,
-                                      idDifficulte: idDifficulte,
-                                      idAventure: widget.idAventure,
-                                      effectuerDB: effectuerDB,
-                                      onPartieFinished: () async {
-                                        await loadLevels();
-                                        if (nouvellePartie.gagne) {
-                                          await effectuerDB.add(Effectuer(
-                                            idAventure: widget.idAventure,
-                                            idPartie: idNouvellePartie,
-                                            idNiveau: niveau,
-                                            complete: true,
-                                          ));
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                );
-                              }
-                            : null),
+                        onTap: niveauGagne
+                            ? null
+                            : (niveauPrecedentGagne
+                                ? () => startNewGame(niveau)
+                                : null),
                         child: CircleAvatar(
                           backgroundColor:
                               niveauGagne ? Colors.green : Colors.grey,
@@ -150,7 +150,7 @@ class _PageNiveauxState extends State<PageNiveaux> {
                         ),
                       );
                     } else {
-                      return SizedBox(height: 20);
+                      return Icon(Icons.arrow_upward);
                     }
                   }),
                 ),
