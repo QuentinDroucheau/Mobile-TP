@@ -28,4 +28,19 @@ class DifficulteDB {
         Difficulte(id: id, nomDifficulte: nom, nbTentatives: nbTentatives, valeurMax: valeurMax)
     ];
   }
+
+  Future<Difficulte> getById(int id) async {
+    final db = await database;
+    final List<Map<String, Object?>> difficulteMaps = await db.query(
+      'Difficulte',
+      where: 'idDifficulte = ?',
+      whereArgs: [id],
+    );
+    return Difficulte(
+      id: difficulteMaps[0]['idDifficulte'] as int,
+      nomDifficulte: difficulteMaps[0]['nom'] as String,
+      nbTentatives: difficulteMaps[0]['nbTentative'] as int,
+      valeurMax: difficulteMaps[0]['valeurMax'] as int,
+    );
+  }
 }

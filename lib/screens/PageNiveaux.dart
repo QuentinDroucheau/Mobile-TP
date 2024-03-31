@@ -97,12 +97,17 @@ class _PageNiveauxState extends State<PageNiveaux> {
                                 } else {
                                   idDifficulte = 3;
                                 }
+
+                                Difficulte difficulte =
+                                    await difficulteDB.getById(idDifficulte);
+
                                 int mysteryNumber =
-                                    Random().nextInt(10 * idDifficulte) + 1;
+                                    Random().nextInt(difficulte.valeurMax) + 1;
                                 Partie nouvellePartie = Partie(
                                   score: 0,
                                   nbMystere: mysteryNumber,
-                                  nbEssaisJoueur: 10 * idDifficulte,
+                                  nbEssaisJoueur: difficulte
+                                      .nbTentatives,
                                   gagne: false,
                                   dateDebut: DateTime.now(),
                                   dateFin: DateTime.now(),
