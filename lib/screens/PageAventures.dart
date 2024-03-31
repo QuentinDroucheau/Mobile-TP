@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tp/models/Aventure.dart';
 import 'package:mobile_tp/models/Niveau.dart';
+import 'package:mobile_tp/screens/Home.dart';
 import 'package:mobile_tp/screens/PageNiveaux.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobile_tp/services/AventureDB.dart';
@@ -38,6 +39,12 @@ class _PageAventuresState extends State<PageAventures> {
       appBar: AppBar(
         title: Text('Le nombre magique'),
         centerTitle: true,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Home(database: widget.database)))),
       ),
       body: Center(
         child: SingleChildScrollView(
