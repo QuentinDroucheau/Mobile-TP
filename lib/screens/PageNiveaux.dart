@@ -87,7 +87,7 @@ class _PageNiveauxState extends State<PageNiveaux> {
                           doneLevels.any((niveauGagne) =>
                               niveauGagne.palier == niveau - 1);
                       return GestureDetector(
-                        onTap: niveauPrecedentGagne
+                        onTap: niveauGagne ? null : (niveauPrecedentGagne
                             ? () async {
                                 int idDifficulte;
                                 if (niveau <= 3) {
@@ -142,7 +142,7 @@ class _PageNiveauxState extends State<PageNiveaux> {
                                   ),
                                 );
                               }
-                            : null,
+                            : null),
                         child: CircleAvatar(
                           backgroundColor:
                               niveauGagne ? Colors.green : Colors.grey,
