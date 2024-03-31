@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tp/models/Aventure.dart';
+import 'package:mobile_tp/models/Niveau.dart';
 import 'package:mobile_tp/screens/PageNiveaux.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobile_tp/services/AventureDB.dart';
-
 
 class PageAventures extends StatefulWidget {
   final Future<Database> database;
@@ -50,18 +50,44 @@ class _PageAventuresState extends State<PageAventures> {
                 textAlign: TextAlign.center,
               ),
               ...aventures.map((aventure) {
-                return Card(
-                  child: ListTile(
-                    title: Center(child: Text(aventure.nomJoueur)),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PageNiveaux(
-                                totalNiveaux: 10, idAventure: aventure.id ?? 0, database: widget.database)),
+                return FutureBuilder<List<Niveau>>(
+                  future: aventureDB.getLevelsWon(aventure.id ?? 0),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Erreur : ${snapshot.error}');
+                    } else {
+                      List<Niveau> levelsWon = snapshot.data ?? [];
+                      int nextLevel =
+                          levelsWon.length < 10 ? levelsWon.length + 1 : 11;
+                      String status = nextLevel <= 10 ? 'En cours' : 'Terminée';
+                      String message = status == 'En cours'
+                          ? 'Prochain niveau : $nextLevel'
+                          : 'Terminée';
+
+                      return Card(
+                        color: status == 'Terminée'
+                            ? Colors.green[100]
+                            : Colors.white,
+                        child: ListTile(
+                          title: Center(child: Text(aventure.nomJoueur)),
+                          subtitle: Text(message),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PageNiveaux(
+                                    totalNiveaux: 10,
+                                    idAventure: aventure.id ?? 0,
+                                    database: widget.database),
+                              ),
+                            );
+                          },
+                        ),
                       );
-                    },
-                  ),
+                    }
+                  },
                 );
               }).toList(),
             ],

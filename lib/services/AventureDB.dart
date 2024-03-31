@@ -27,7 +27,8 @@ class AventureDB {
       } else {
         idDifficulte = 3;
       }
-      await niveauDB.add(Niveau(palier: i, idDifficulte: idDifficulte, idAventure: id));
+      await niveauDB
+          .add(Niveau(palier: i, idDifficulte: idDifficulte, idAventure: id));
     }
 
     return id;
@@ -47,7 +48,7 @@ class AventureDB {
 
   Future<List<Niveau>> getLevelsWon(int idAventure) async {
     final db = await database;
-    final List<Map<String, Object?>> levelsMaps = await db.rawQuery(''' 
+    final List<Map<String, Object?>> levelsMaps = await db.rawQuery('''
     SELECT Niveau.idNiveau, Niveau.palier, Niveau.idDifficulte
     FROM Niveau
     JOIN Partie ON Partie.idNiveau = Niveau.idNiveau
@@ -59,20 +60,39 @@ class AventureDB {
             'palier': palier as int,
             'idDifficulte': idDifficulte as int,
           } in levelsMaps)
-        Niveau(palier: palier, idDifficulte: idDifficulte, idAventure: idAventure)
+        Niveau(
+            palier: palier, idDifficulte: idDifficulte, idAventure: idAventure)
     ];
   }
 
   Future<List<Niveau>> getLevelsOfAdventure(int idAventure) async {
     final db = await database;
-    final List<Map<String, Object?>> levelsMaps = await db.query('Niveau', where: 'idAventure = ?', whereArgs: [idAventure]);
+    final List<Map<String, Object?>> levelsMaps = await db
+        .query('Niveau', where: 'idAventure = ?', whereArgs: [idAventure]);
     return [
       for (final {
             'idNiveau': id as int,
             'palier': palier as int,
             'idDifficulte': idDifficule as int,
           } in levelsMaps)
-        Niveau(palier: palier, idDifficulte: idDifficule, idAventure: idAventure)
+        Niveau(
+            palier: palier, idDifficulte: idDifficule, idAventure: idAventure)
     ];
   }
+
+  // Future<int> getNextLevel(int idAventure) async {
+  //   final db = await database;
+  //   final List<Map<String, Object?>> levelsMaps = await db.rawQuery('''
+  //   SELECT Niveau.idNiveau, Niveau.palier, Niveau.idDifficulte
+  //   FROM Niveau
+  //   JOIN Partie ON Partie.idNiveau = Niveau.idNiveau
+  //   WHERE Partie.idAventure = ? AND Partie.gagne = 1
+  //   ORDER BY Niveau.palier DESC
+  //   LIMIT 1
+  // ''', [idAventure]);
+  //   if (levelsMaps.isEmpty) {
+  //     return 1;
+  //   }
+  //   return levelsMaps.first['palier'] as int + 1;
+  // }
 }
