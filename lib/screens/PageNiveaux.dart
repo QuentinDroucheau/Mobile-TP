@@ -6,6 +6,7 @@ import 'package:mobile_tp/models/Effectuer.dart';
 import 'package:mobile_tp/models/Niveau.dart';
 import 'package:mobile_tp/models/Partie.dart';
 import 'package:mobile_tp/screens/MysteryNumberScreen.dart';
+import 'package:mobile_tp/screens/PageAventures.dart';
 import 'package:mobile_tp/services/AventureDB.dart';
 import 'package:mobile_tp/services/DifficulteDB.dart';
 import 'package:mobile_tp/services/EffectuerDB.dart';
@@ -120,6 +121,19 @@ class _PageNiveauxState extends State<PageNiveaux> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Aventure'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PageAventures(
+                  database: widget.database,
+                ),
+              ),
+            );
+          },
+        ),
       ),
       body: Center(
         child: StreamBuilder<List<Niveau>>(
