@@ -8,16 +8,22 @@ class EffectuerDB {
 
   Future<void> add(Effectuer effectuer) async {
     final db = await database;
-    await db.insert(
-      'Effectuer',
-      effectuer.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    print('Adding Effectuer with values: ${effectuer.toMap()}');
+    try {
+      await db.insert(
+        'Effectuer',
+        effectuer.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      print('Failed to add Effectuer: $e');
+    }
   }
 
   Future<List<Effectuer>> getAll() async {
     final db = await database;
-    final List<Map<String, Object?>> effectuerMaps = await db.query('Effectuer');
+    final List<Map<String, Object?>> effectuerMaps =
+        await db.query('Effectuer');
     return [
       for (final {
             'idAventure': idAventure as int,
@@ -25,7 +31,11 @@ class EffectuerDB {
             'idPartie': idPartie as int,
             'complete': complete as int,
           } in effectuerMaps)
-        Effectuer(idAventure: idAventure, idNiveau: idNiveau, idPartie: idPartie, complete: complete == 1)
+        Effectuer(
+            idAventure: idAventure,
+            idNiveau: idNiveau,
+            idPartie: idPartie,
+            complete: complete == 1)
     ];
   }
 }

@@ -21,8 +21,8 @@ class DifficulteDB {
     return [
       for (final {
             'idDifficulte': id as int,
-            'nomDifficulte': nom as int,
-            'nbTentatives': nbTentatives as int,
+            'nom': nom as String,
+            'nbTentative': nbTentatives as int,
             'valeurMax': valeurMax as int,
           } in difficulteMaps)
         Difficulte(id: id, nomDifficulte: nom, nbTentatives: nbTentatives, valeurMax: valeurMax)

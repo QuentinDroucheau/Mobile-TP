@@ -54,12 +54,11 @@ class _PageAventuresState extends State<PageAventures> {
                   child: ListTile(
                     title: Center(child: Text(aventure.nomJoueur)),
                     onTap: () {
-                      print('ID de l\'aventure sélectionnée: ${aventure.id}');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PageNiveaux(
-                                totalNiveaux: 10, idAventure: aventure.id)),
+                                totalNiveaux: 10, idAventure: aventure.id ?? 0, database: widget.database)),
                       );
                     },
                   ),
