@@ -1,3 +1,6 @@
+import 'package:mobile_tp/models/Partie.dart';
+import 'package:mobile_tp/screens/HistoriquePage.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -75,5 +78,29 @@ class SqliteService {
       },
       version: 3,
     );
+  }
+
+  Future<List<Partie>> getHistorique() async {
+    final db = await initializeDB();
+          
+    List<Partie> historique = [];
+    
+    for (int i = 0; i <= 10; i++) {
+      Partie partie = Partie(
+        id: i,
+        score: i,
+        nbMystere: i,
+        nbEssaisJoueur: i,
+        gagne: i % 2 == 0,
+        dateDebut: DateTime(2021, 9, i),
+        dateFin: DateTime(2021, 9, i),
+        idAventure: i,
+        idNiveau: i
+      );
+      
+      historique.add(partie);
+    }
+    
+    return historique;
   }
 }
