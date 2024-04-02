@@ -20,7 +20,7 @@ class MysteryNumberLoadScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     final Future<Partie> partie = Future<Partie>.delayed(
-      const Duration(seconds: 1),
+      const Duration(seconds: 2),
       () => SqliteService().getPartie(aventure.id, niveau.id),
     );
 
@@ -34,17 +34,13 @@ class MysteryNumberLoadScreen extends StatelessWidget{
         future: Future.wait([partie, difficulte]),
         builder: (context, snapshot){
           if(snapshot.hasError){
-            print("niveau : "+niveau.id.toString());
-            print("aventure : "+aventure.id.toString());
-            print("AAAAA");
-            print(snapshot.error);
             return Text("${snapshot.error}");
           }else if(snapshot.hasData){
             final partie = snapshot.data![0];
             final difficulte = snapshot.data![1];
 
             if(partie is Partie && difficulte is Difficulte){
-              return MysteryNumberScreen(partie: partie, difficulte: difficulte);
+              return MysteryNumberScreen(partie: partie, difficulte: difficulte, aventure: aventure);
             }else{
               return const Text("Impossible de charger la partie");
             }

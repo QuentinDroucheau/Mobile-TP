@@ -1,9 +1,9 @@
 class Effectuer{
 
-  final int idAventure;
-  final int idNiveau;
-  final int idPartie;
-  final bool complete;
+  late int idAventure;
+  late int idNiveau;
+  late int idPartie;
+  late bool complete;
 
   Effectuer({
     required this.idAventure,

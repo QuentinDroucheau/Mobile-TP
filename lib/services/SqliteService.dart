@@ -39,7 +39,7 @@ class SqliteService {
             nbEssaisJoueur INTEGER NOT NULL, 
             gagne INTEGER, 
             dateDebut TEXT NOT NULL, 
-            dateFin TEXT,
+            dateFin TEXT DEFAULT NULL,
             idAventure INTEGER,
             idNiveau INTEGER,
             FOREIGN KEY(idAventure) REFERENCES Aventure(idAventure),
@@ -137,39 +137,40 @@ class SqliteService {
 
         print('Database upgraded from $oldVersion to $newVersion');
       },
-      version: 9,
+      version: 14,
     );
   }
 
   Future<Partie> getPartie(int idAventure, int idNiveau)async{
     final db = await SqliteService().initializeDB();
 
+    print(await db.query("Partie"));
+
     final List<Map<String, Object?>> dernierePartie = await db.rawQuery("""
-      select *
-      from Partie
-      where idAventure = ? and idNiveau = ? and dateFin = null
-      order by dateDebut desc limit 1
+      SELECT *
+      FROM Partie
+      WHERE idAventure = ? AND idNiveau = ? AND dateFin IS NULL
+      ORDER BY dateDebut DESC LIMIT 1
     """, [idAventure, idNiveau]);
 
     if(dernierePartie.isEmpty){
-      print("Création d'une nouvelle partie");
       Difficulte difficulte = await getDifficulte(idNiveau);
       Random random = Random();
       int nbMystere = random.nextInt(difficulte.valeurMax) + 1;
 
       return Partie(
         score: 0,
-        nbMystere: nbMystere,
+        nbMystere: nbMystere+200,
         nbEssaisJoueur: 0,
         gagne: false,
         dateDebut: DateTime.now(),
-        dateFin: DateTime.now(),
+        dateFin: null,
         idAventure: idAventure,
         idNiveau: idNiveau,
       );
 
     }else{
-      print("Récupération de la dernière partie");
+
       return Partie(
         id: dernierePartie[0]['idPartie'] as int,
         score: dernierePartie[0]['score'] as int,
@@ -194,11 +195,39 @@ class SqliteService {
       where idNiveau = ?
     """, [idNiveau]);
 
-    return Difficulte(
-      id: difficulte[0]['idDifficulte'] as int,
-      nomDifficulte: difficulte[0]['nom'] as String,
-      nbTentatives: difficulte[0]['nbTentatives'] as int,
-      valeurMax: difficulte[0]['valeurMax'] as int,
+    Difficulte d = Difficulte(
+      id: 1,
+      nomDifficulte: 'Facile',
+      nbTentatives: 20,
+      valeurMax: 100,
+    );
+
+    for(final difficulteElement in difficulte){
+      int idDifficulte = difficulteElement['idDifficulte'] as int;
+      String nom = difficulteElement['nom'] as String;
+      int nbTentatives = difficulteElement['nbTentative'] as int;
+      int valeurMax = difficulteElement['valeurMax'] as int;
+
+      d = Difficulte(
+        id: idDifficulte,
+        nomDifficulte: nom,
+        nbTentatives: nbTentatives,
+        valeurMax: valeurMax,
+      );
+    }
+
+    return d;
+  }
+
+  Future<void> addPartie(Partie partie)async{
+    final db = await SqliteService().initializeDB();
+
+    print(partie.toMap());
+
+    await db.insert(
+      'Partie',
+      partie.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 

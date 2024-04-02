@@ -1,7 +1,7 @@
 class Aventure{
 
-  final int id;
-  final String nomJoueur;
+  late int id;
+  late String nomJoueur;
 
   Aventure({
     required this.id,

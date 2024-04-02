@@ -42,7 +42,15 @@ class NiveauWidget extends StatelessWidget{
     }else if(niveauPrecedentComplete){
       return GestureDetector(
         onTap: (){
-          print("a faire");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MysteryNumberLoadScreen(
+                niveau: niveau,
+                aventure: aventure,
+              ),
+            ),
+          );
         },
         child: CircleAvatar(
           backgroundColor: Colors.blue,

@@ -1,14 +1,14 @@
 class Partie {
   
-  final int? id;
-  final int score;
-  final int nbMystere;
+  late int? id;
+  late int score;
+  late int nbMystere;
   late int nbEssaisJoueur;
-  bool gagne;
-  final DateTime dateDebut;
-  final DateTime dateFin;
-  final int idAventure;
-  final int idNiveau;
+  late bool gagne;
+  late DateTime dateDebut;
+  late DateTime? dateFin;
+  late int idAventure;
+  late int idNiveau;
 
   Partie({
     this.id,
@@ -17,7 +17,7 @@ class Partie {
     required this.nbEssaisJoueur,
     required this.gagne,
     required this.dateDebut,
-    required this.dateFin,
+    this.dateFin,
     required this.idAventure,
     required this.idNiveau,
   });
@@ -29,8 +29,8 @@ class Partie {
       'nbMystere': nbMystere,
       'nbEssaisJoueur': nbEssaisJoueur,
       'gagne': gagne ? 1 : 0,
-      'dateDebut': dateDebut.toIso8601String(),
-      'dateFin': dateFin.toIso8601String(),
+      'dateDebut': dateDebut.toString(),
+      'dateFin': dateFin == null ? null : dateFin.toString(),
       'idAventure': idAventure,
       'idNiveau': idNiveau,
     };

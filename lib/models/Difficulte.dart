@@ -1,9 +1,9 @@
 class Difficulte{
 
-  final int id;
-  final String nomDifficulte;
+  late int id;
+  late String nomDifficulte;
   late int nbTentatives;
-  final int valeurMax;
+  late int valeurMax;
 
   Difficulte({
     required this.id,

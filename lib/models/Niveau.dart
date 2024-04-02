@@ -1,10 +1,10 @@
 class Niveau{
 
-  final int id;
-  final int palier;
-  final int idDifficulte;
-  final int idAventure;
-  final bool complete;
+  late int id;
+  late int palier;
+  late int idDifficulte;
+  late int idAventure;
+  late bool complete;
   
   Niveau({
     required this.id,

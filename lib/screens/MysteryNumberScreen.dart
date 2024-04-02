@@ -3,17 +3,20 @@ import 'package:mobile_tp/models/Aventure.dart';
 import 'package:mobile_tp/models/Difficulte.dart';
 import 'package:mobile_tp/models/Niveau.dart';
 import 'package:mobile_tp/models/Partie.dart';
+import 'package:mobile_tp/screens/NiveauScreen.dart';
 import 'package:mobile_tp/services/SqliteService.dart';
 
 class MysteryNumberScreen extends StatefulWidget{
 
   late Partie partie;
   late Difficulte difficulte;
+  late Aventure aventure;
 
   MysteryNumberScreen({
     Key? key,
     required this.partie,
     required this.difficulte,
+    required this.aventure,
   }) : super(key: key);
 
   @override
@@ -24,30 +27,68 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
   
   late int _nombre = 0;
   late int _nombreMystere = 0;
-  late String _message = "Trouve le nombre";
+  late String _message = "Trouve le nombre "+_nombreMystere.toString();
   late bool _gameOver = false;
 
-  void _check()async{
-    if(_nombre == _nombreMystere){
-      _message = "Bravo !";
-      _gameOver = false;
-    }else if(_nombre < _nombreMystere){
-      _message = "Trop petit";
-    }else{
-      _message = "Trop grand";
-    }
+  @override
+  void initState() {
+    _nombreMystere = widget.partie.nbMystere;
+    super.initState();
+  }
 
-    widget.partie.nbEssaisJoueur++;
+  void _check(){
+    setState((){
+      if(_nombre == _nombreMystere){
+        _message = "Bravo !";
+        widget.partie.gagne = true;
+        widget.partie.dateFin = DateTime.now();
 
-    if(widget.partie.nbEssaisJoueur >= widget.difficulte.nbTentatives){
-      _message = "Perdu !";
-      _gameOver = true;
-    }
+        SqliteService().addPartie(widget.partie);
+
+      }else if(_nombre < _nombreMystere){
+        _message = "Trop petit";
+      }else{
+        _message = "Trop grand";
+      }
+
+      widget.partie.nbEssaisJoueur++;
+
+      if(widget.partie.nbEssaisJoueur >= widget.difficulte.nbTentatives){
+        _message = "Perdu !";
+        _gameOver = true;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context){
-    if(!_gameOver){
+    if(widget.partie.gagne){
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Mystery Number'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Vous avez gagné !", style: TextStyle(fontSize: 24),),
+              const SizedBox(height: 20,),
+              ElevatedButton(
+                onPressed: (){
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NiveauScreen(),
+                    ),
+                  );
+                },
+                child: Text('Quitter'),
+              ),
+            ],
+          ),
+        )
+      );
+    }else if(!_gameOver){
       return Scaffold(
         appBar: AppBar(
           title: Text('Mystery Number'),
@@ -75,9 +116,22 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
                 child: const Text('Valider'),
               ),
               const SizedBox(height: 20,),
-              const ElevatedButton(
-                onPressed: null,
+              ElevatedButton(
                 child: Text('Quitter'),
+                onPressed: (){
+                  SqliteService().addPartie(widget.partie);
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 20,),
+              ElevatedButton(
+                child: Text('Abandonner'),
+                onPressed: (){
+                  widget.partie.gagne = false;
+                  widget.partie.dateFin = DateTime.now();
+                  SqliteService().addPartie(widget.partie);
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
@@ -94,8 +148,10 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
             children: [
               Text(_message, style: TextStyle(fontSize: 24),),
               const SizedBox(height: 20,),
-              const ElevatedButton(
-                onPressed: null,
+              ElevatedButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
                 child: Text('Quitter'),
               ),
             ],
