@@ -1,13 +1,14 @@
-import 'package:mobile_tp/models/Difficulte.dart';
-import 'package:mobile_tp/models/Niveau.dart';
-import 'package:mobile_tp/models/Partie.dart';
-import 'package:mobile_tp/screens/HistoriquePage.dart';
+import 'package:mobile_tp/main.dart';
+import 'package:mobile_tp/models/aventure_model.dart';
+import 'package:mobile_tp/models/difficulte_model.dart';
+import 'package:mobile_tp/models/niveau_model.dart';
+import 'package:mobile_tp/models/partie_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'dart:math';
 
-class SqliteService {
+class SqfliteService{
+
   Future<void> onCreate(Database db, int version) async {
     await db.execute("""
           CREATE TABLE Aventure (
@@ -46,18 +47,6 @@ class SqliteService {
             FOREIGN KEY(idNiveau) REFERENCES Niveau(idNiveau)
           )
         """);
-    await db.execute("""
-          CREATE TABLE Effectuer (
-            idAventure INTEGER NOT NULL, 
-            idPartie INTEGER NOT NULL, 
-            idNiveau INTEGER NOT NULL, 
-            complete INTEGER NOT NULL,
-            PRIMARY KEY(idAventure, idPartie, idNiveau),
-            FOREIGN KEY(idAventure) REFERENCES Aventure(idAventure),
-            FOREIGN KEY(idPartie) REFERENCES Partie(idPartie),
-            FOREIGN KEY(idNiveau) REFERENCES Niveau(idNiveau)
-          )
-        """);
       await db.execute("""
           INSERT INTO Difficulte (nom, nbTentative, valeurMax) VALUES ('Facile', 20, 50)
           """);
@@ -77,47 +66,32 @@ class SqliteService {
           INSERT INTO Niveau (palier, idDifficulte) VALUES (3, 1)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (4, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (4, 2)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (5, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (5, 2)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (6, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (6, 2)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (7, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (7, 3)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (8, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (8, 3)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (9, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (9, 3)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (10, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (10, 3)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (11, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (11, 3)
           """);
       await db.execute("""
-          INSERT INTO Niveau (palier, idDifficulte) VALUES (12, 1)
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (12, 3)
           """);
-      await db.execute("""
-          INSERT INTO Aventure (nomJoueur) VALUES ('Joueur 1')
-        """);
-      await db.execute("""
-          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 1)
-        """);
-      await db.execute("""
-          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 2)
-        """);
-      await db.execute("""
-          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 3)
-        """);
-      await db.execute("""
-          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 4)
-        """);
   }
 
   Future<Database> initializeDB() async {
@@ -134,17 +108,13 @@ class SqliteService {
 
         // Recrée les tables
         await onCreate(db, newVersion);
-
-        print('Database upgraded from $oldVersion to $newVersion');
       },
-      version: 14,
+      version: 15,
     );
   }
 
   Future<Partie> getPartie(int idAventure, int idNiveau)async{
-    final db = await SqliteService().initializeDB();
-
-    print(await db.query("Partie"));
+    final db = await database;
 
     final List<Map<String, Object?>> dernierePartie = await db.rawQuery("""
       SELECT *
@@ -160,7 +130,7 @@ class SqliteService {
 
       return Partie(
         score: 0,
-        nbMystere: nbMystere+200,
+        nbMystere: nbMystere,
         nbEssaisJoueur: 0,
         gagne: false,
         dateDebut: DateTime.now(),
@@ -186,7 +156,7 @@ class SqliteService {
   }
 
   Future<Difficulte> getDifficulte(int idNiveau)async{
-    final db = await SqliteService().initializeDB();
+    final db = await database;
 
     final List<Map<String, Object?>> difficulte = await db.rawQuery("""
       select *
@@ -199,7 +169,7 @@ class SqliteService {
       id: 1,
       nomDifficulte: 'Facile',
       nbTentatives: 20,
-      valeurMax: 100,
+      valeurMax: 50,
     );
 
     for(final difficulteElement in difficulte){
@@ -220,9 +190,7 @@ class SqliteService {
   }
 
   Future<void> addPartie(Partie partie)async{
-    final db = await SqliteService().initializeDB();
-
-    print(partie.toMap());
+    final db = await database;
 
     await db.insert(
       'Partie',
@@ -232,7 +200,7 @@ class SqliteService {
   }
 
   Future<List<Niveau>> getNiveaux(int idAventure)async{
-    final db = await SqliteService().initializeDB();
+    final db = await database;
 
     final List<Map<String, Object?>> niveauxIdComplete = await db.rawQuery("""
       select distinct idNiveau
@@ -259,32 +227,57 @@ class SqliteService {
     return niveaux;
   }
 
-  Future<List<Partie>> getHistorique() async {
-    final db = await SqliteService().initializeDB();
+  Future<List<Partie>> getHistorique()async{
+    final db = await database;
     
     final List<Map<String, Object?>> partieMaps = await db.query('Partie');
     return [
-      for (final {
-            'idPartie': id as int,
-            'score': score as int,
-            'nbMystere': nbMystere as int,
-            'nbEssaisJoueur': nbEssaisJoueur as int,
-            'gagne': gagne as int,
-            'dateDebut': dateDebut as String,
-            'dateFin': dateFin as String,
-            'idAventure': idAventure as int,
-            'idNiveau': idNiveau as int,
-          } in partieMaps)
+      for(final {
+        'idPartie': id as int,
+        'score': score as int,
+        'nbMystere': nbMystere as int,
+        'nbEssaisJoueur': nbEssaisJoueur as int,
+        'gagne': gagne as int,
+        'dateDebut': dateDebut as String,
+        'dateFin': dateFin as String?,
+        'idAventure': idAventure as int,
+        'idNiveau': idNiveau as int,
+      } in partieMaps)
         Partie(
-            id: id,
-            score: score,
-            nbMystere: nbMystere,
-            nbEssaisJoueur: nbEssaisJoueur,
-            gagne: gagne == 1,
-            dateDebut: DateTime.parse(dateDebut),
-            dateFin: DateTime.parse(dateFin),
-            idAventure: idAventure,
-            idNiveau: idNiveau)
+          id: id,
+          score: score,
+          nbMystere: nbMystere,
+          nbEssaisJoueur: nbEssaisJoueur,
+          gagne: gagne == 1,
+          dateDebut: DateTime.parse(dateDebut),
+          dateFin: dateFin is String ? DateTime.parse(dateFin) : null,
+          idAventure: idAventure,
+          idNiveau: idNiveau)
     ];
+  }
+
+  Future<List<Aventure>> getAventures()async{
+    final db = await database;
+
+    final List<Map<String, Object?>> aventureMaps = await db.query('Aventure');
+    return [
+      for(final {
+        'idAventure': id as int,
+        'nomJoueur': nomJoueur as String,
+      } in aventureMaps)
+        Aventure(
+          id: id,
+          nomJoueur: nomJoueur,
+        )
+    ];
+  }
+
+  Future<void> addAventure(String aventure)async{
+    final db = await database;
+
+    await db.insert(
+      'Aventure',{'nomJoueur': aventure,},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 }

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tp/models/Aventure.dart';
-import 'package:mobile_tp/models/Difficulte.dart';
-import 'package:mobile_tp/models/Niveau.dart';
-import 'package:mobile_tp/models/Partie.dart';
-import 'package:mobile_tp/screens/NiveauScreen.dart';
-import 'package:mobile_tp/services/SqliteService.dart';
+import 'package:mobile_tp/models/aventure_model.dart';
+import 'package:mobile_tp/models/difficulte_model.dart';
+import 'package:mobile_tp/models/partie_model.dart';
+import 'package:mobile_tp/pages/carte_page.dart';
+import 'package:mobile_tp/services/sqflite_service.dart';
 
-class MysteryNumberScreen extends StatefulWidget{
+class GamePage extends StatefulWidget{
 
-  late Partie partie;
-  late Difficulte difficulte;
-  late Aventure aventure;
+  final Partie partie;
+  final Difficulte difficulte;
+  final Aventure aventure;
 
-  MysteryNumberScreen({
+  const GamePage({
     Key? key,
     required this.partie,
     required this.difficulte,
@@ -20,19 +19,20 @@ class MysteryNumberScreen extends StatefulWidget{
   }) : super(key: key);
 
   @override
-  _MysteryNumberScreen createState() => _MysteryNumberScreen();
+  GamePageState createState() => GamePageState();
 }
 
-class _MysteryNumberScreen extends State<MysteryNumberScreen>{
+class GamePageState extends State<GamePage>{
   
   late int _nombre = 0;
   late int _nombreMystere = 0;
-  late String _message = "Trouve le nombre "+_nombreMystere.toString();
+  late String _message = "";
   late bool _gameOver = false;
 
   @override
   void initState() {
     _nombreMystere = widget.partie.nbMystere;
+    _message = "Trouve le nombre ($_nombreMystere)";
     super.initState();
   }
 
@@ -43,12 +43,12 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
         widget.partie.gagne = true;
         widget.partie.dateFin = DateTime.now();
 
-        SqliteService().addPartie(widget.partie);
+        SqfliteService().addPartie(widget.partie);
 
       }else if(_nombre < _nombreMystere){
-        _message = "Trop petit";
+        _message = "Trop petit !";
       }else{
-        _message = "Trop grand";
+        _message = "Trop grand !";
       }
 
       widget.partie.nbEssaisJoueur++;
@@ -65,7 +65,7 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
     if(widget.partie.gagne){
       return Scaffold(
         appBar: AppBar(
-          title: Text('Mystery Number'),
+          title: const Text('Mystery Number'),
         ),
         body: Center(
           child: Column(
@@ -78,11 +78,13 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
                    Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => NiveauScreen(),
+                      builder: (context) => CartePage(
+                        aventure: widget.aventure,
+                      ),
                     ),
                   );
                 },
-                child: Text('Quitter'),
+                child: const Text('Quitter'),
               ),
             ],
           ),
@@ -91,21 +93,23 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
     }else if(!_gameOver){
       return Scaffold(
         appBar: AppBar(
-          title: Text('Mystery Number'),
+          title: const Text('Mystery Number'),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(_message, style: TextStyle(fontSize: 24),),
+              Text(_message, 
+                style: const TextStyle(fontSize: 24),
+              ),
               const SizedBox(height: 20,),
-              Text("Difficulté: "+ widget.difficulte.nomDifficulte),
-              Text("Tentatives restantes: "+ (widget.difficulte.nbTentatives - widget.partie.nbEssaisJoueur).toString()),
-              SizedBox(height: 20,),
+              Text("Difficulté: ${widget.difficulte.nomDifficulte}"),
+              Text("Tentatives restantes: ${widget.difficulte.nbTentatives - widget.partie.nbEssaisJoueur}"),
+              const SizedBox(height: 20,),
               TextField(
                 keyboardType: TextInputType.number,
                 onChanged: (value){
-                  setState(() {
+                  setState((){
                     _nombre = int.tryParse(value) ?? 0;
                   });
                 },
@@ -117,19 +121,19 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
               ),
               const SizedBox(height: 20,),
               ElevatedButton(
-                child: Text('Quitter'),
+                child: const Text('Quitter'),
                 onPressed: (){
-                  SqliteService().addPartie(widget.partie);
+                  SqfliteService().addPartie(widget.partie);
                   Navigator.pop(context);
                 },
               ),
               const SizedBox(height: 20,),
               ElevatedButton(
-                child: Text('Abandonner'),
+                child: const Text('Abandonner'),
                 onPressed: (){
                   widget.partie.gagne = false;
                   widget.partie.dateFin = DateTime.now();
-                  SqliteService().addPartie(widget.partie);
+                  SqfliteService().addPartie(widget.partie);
                   Navigator.pop(context);
                 },
               ),
@@ -140,19 +144,21 @@ class _MysteryNumberScreen extends State<MysteryNumberScreen>{
     }else{
       return Scaffold(
         appBar: AppBar(
-          title: Text('Mystery Number'),
+          title: const Text('Mystery Number'),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(_message, style: TextStyle(fontSize: 24),),
+              Text(_message, 
+                style: const TextStyle(fontSize: 24),
+              ),
               const SizedBox(height: 20,),
               ElevatedButton(
                 onPressed: (){
                   Navigator.pop(context);
                 },
-                child: Text('Quitter'),
+                child: const Text('Quitter'),
               ),
             ],
           ),

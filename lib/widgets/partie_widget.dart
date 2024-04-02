@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mobile_tp/models/Partie.dart';
+import 'package:mobile_tp/models/partie_model.dart';
 
 class HistoriqueWidget extends StatelessWidget{
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tp/models/Aventure.dart';
-import 'package:mobile_tp/models/Niveau.dart';
-import 'package:mobile_tp/screens/MysteryNumberLoadScreen.dart';
-import 'package:mobile_tp/services/SqliteService.dart';
+import 'package:mobile_tp/models/aventure_model.dart';
+import 'package:mobile_tp/models/niveau_model.dart';
+import 'package:mobile_tp/pages/game_load_page.dart';
 
 class NiveauWidget extends StatelessWidget{
 
@@ -27,7 +26,7 @@ class NiveauWidget extends StatelessWidget{
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MysteryNumberLoadScreen(
+              builder: (context) => GameLoadPage(
                 niveau: niveau,
                 aventure: aventure,
               ),
@@ -45,7 +44,7 @@ class NiveauWidget extends StatelessWidget{
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MysteryNumberLoadScreen(
+              builder: (context) => GameLoadPage(
                 niveau: niveau,
                 aventure: aventure,
               ),

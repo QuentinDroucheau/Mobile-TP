@@ -49,13 +49,4 @@ class Partie {
       idNiveau: map['idNiveau'],
     );
   }
-
-  void setGagne (bool gagne) {
-    this.gagne = gagne;
-  }
-
-  @override
-  String toString() {
-    return 'Partie{id: $id, score: $score, nbMystere: $nbMystere, nbEssaisJoueur: $nbEssaisJoueur, gagne: $gagne, dateDebut: $dateDebut, dateFin: $dateFin, idAventure: $idAventure, idNiveau: $idNiveau}';
-  }
 }

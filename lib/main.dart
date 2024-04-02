@@ -1,18 +1,25 @@
-import 'package:flutter/widgets.dart';
-import 'package:mobile_tp/models/Difficulte.dart';
-import 'package:mobile_tp/models/Niveau.dart';
-import 'package:mobile_tp/services/DifficulteDB.dart';
-import 'package:mobile_tp/services/NiveauDB.dart';
-import 'package:mobile_tp/screens/MysteryNumberApp.dart';
-import 'package:mobile_tp/screens/PageAventures.dart';
-import 'package:mobile_tp/services/SqliteService.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-
+import 'package:flutter/material.dart';
+import 'package:mobile_tp/pages/home_page.dart';
+import 'package:mobile_tp/services/sqflite_service.dart';
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  runApp(MysteryNumberApp(database: database));
+  // WidgetsFlutterBinding.ensureInitialized();
+  runApp(MysteryNumberApp());
 }
 
-final database = SqliteService().initializeDB();
+final database = SqfliteService().initializeDB();
+
+class MysteryNumberApp extends StatelessWidget{
+
+  MysteryNumberApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Mystery Number',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomePage(),
+    );
+  }
+}
