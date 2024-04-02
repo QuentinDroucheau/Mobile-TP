@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_tp/models/Partie.dart';
 import 'package:mobile_tp/screens/HistoriquePage.dart';
 import 'package:mobile_tp/screens/PageAventures.dart';
+import 'package:mobile_tp/widgets/carte_widget.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobile_tp/widgets/partie_widget.dart';
 

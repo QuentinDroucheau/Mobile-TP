@@ -1,8 +1,11 @@
+import 'package:mobile_tp/models/Difficulte.dart';
+import 'package:mobile_tp/models/Niveau.dart';
 import 'package:mobile_tp/models/Partie.dart';
 import 'package:mobile_tp/screens/HistoriquePage.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'dart:math';
 
 class SqliteService {
   Future<void> onCreate(Database db, int version) async {
@@ -25,20 +28,18 @@ class SqliteService {
             idNiveau INTEGER PRIMARY KEY AUTOINCREMENT, 
             palier INTEGER NOT NULL, 
             idDifficulte INTEGER NOT NULL,
-            idAventure INTEGER NOT NULL,
-            FOREIGN KEY(idDifficulte) REFERENCES Difficulte(idDifficulte),
-            FOREIGN KEY(idAventure) REFERENCES Aventure(idAventure)
+            FOREIGN KEY(idDifficulte) REFERENCES Difficulte(idDifficulte)
           )
         """);
     await db.execute("""
           CREATE TABLE Partie (
             idPartie INTEGER PRIMARY KEY AUTOINCREMENT, 
-            score INTEGER NOT NULL, 
+            score INTEGER, 
             nbMystere INTEGER NOT NULL, 
             nbEssaisJoueur INTEGER NOT NULL, 
-            gagne INTEGER NOT NULL, 
+            gagne INTEGER, 
             dateDebut TEXT NOT NULL, 
-            dateFin TEXT NOT NULL,
+            dateFin TEXT,
             idAventure INTEGER,
             idNiveau INTEGER,
             FOREIGN KEY(idAventure) REFERENCES Aventure(idAventure),
@@ -56,6 +57,66 @@ class SqliteService {
             FOREIGN KEY(idPartie) REFERENCES Partie(idPartie),
             FOREIGN KEY(idNiveau) REFERENCES Niveau(idNiveau)
           )
+        """);
+      await db.execute("""
+          INSERT INTO Difficulte (nom, nbTentative, valeurMax) VALUES ('Facile', 20, 50)
+          """);
+      await db.execute("""
+          INSERT INTO Difficulte (nom, nbTentative, valeurMax) VALUES ('Moyen', 15, 150)
+          """);
+      await db.execute("""
+          INSERT INTO Difficulte (nom, nbTentative, valeurMax) VALUES ('Difficile', 10, 300)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (1, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (2, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (3, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (4, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (5, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (6, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (7, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (8, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (9, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (10, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (11, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Niveau (palier, idDifficulte) VALUES (12, 1)
+          """);
+      await db.execute("""
+          INSERT INTO Aventure (nomJoueur) VALUES ('Joueur 1')
+        """);
+      await db.execute("""
+          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 1)
+        """);
+      await db.execute("""
+          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 2)
+        """);
+      await db.execute("""
+          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 3)
+        """);
+      await db.execute("""
+          INSERT INTO Partie (score, nbMystere, nbEssaisJoueur, gagne, dateDebut, dateFin, idAventure, idNiveau) VALUES (0, 25, 20, 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 4)
         """);
   }
 
@@ -76,31 +137,125 @@ class SqliteService {
 
         print('Database upgraded from $oldVersion to $newVersion');
       },
-      version: 3,
+      version: 9,
     );
   }
 
-  Future<List<Partie>> getHistorique() async {
-    final db = await initializeDB();
-          
-    List<Partie> historique = [];
-    
-    for (int i = 0; i <= 10; i++) {
-      Partie partie = Partie(
-        id: i,
-        score: i,
-        nbMystere: i,
-        nbEssaisJoueur: i,
-        gagne: i % 2 == 0,
-        dateDebut: DateTime(2021, 9, i),
-        dateFin: DateTime(2021, 9, i),
-        idAventure: i,
-        idNiveau: i
+  Future<Partie> getPartie(int idAventure, int idNiveau)async{
+    final db = await SqliteService().initializeDB();
+
+    final List<Map<String, Object?>> dernierePartie = await db.rawQuery("""
+      select *
+      from Partie
+      where idAventure = ? and idNiveau = ? and dateFin = null
+      order by dateDebut desc limit 1
+    """, [idAventure, idNiveau]);
+
+    if(dernierePartie.isEmpty){
+      print("Création d'une nouvelle partie");
+      Difficulte difficulte = await getDifficulte(idNiveau);
+      Random random = Random();
+      int nbMystere = random.nextInt(difficulte.valeurMax) + 1;
+
+      return Partie(
+        score: 0,
+        nbMystere: nbMystere,
+        nbEssaisJoueur: 0,
+        gagne: false,
+        dateDebut: DateTime.now(),
+        dateFin: DateTime.now(),
+        idAventure: idAventure,
+        idNiveau: idNiveau,
       );
-      
-      historique.add(partie);
+
+    }else{
+      print("Récupération de la dernière partie");
+      return Partie(
+        id: dernierePartie[0]['idPartie'] as int,
+        score: dernierePartie[0]['score'] as int,
+        nbMystere: dernierePartie[0]['nbMystere'] as int,
+        nbEssaisJoueur: dernierePartie[0]['nbEssaisJoueur'] as int,
+        gagne: dernierePartie[0]['gagne'] as int == 1,
+        dateDebut: DateTime.parse(dernierePartie[0]['dateDebut'] as String),
+        dateFin: dernierePartie[0]['dateFin'] == null ? DateTime.now() : DateTime.parse(dernierePartie[0]['dateFin'] as String),
+        idAventure: dernierePartie[0]['idAventure'] as int,
+        idNiveau: dernierePartie[0]['idNiveau'] as int,
+      );
     }
+  }
+
+  Future<Difficulte> getDifficulte(int idNiveau)async{
+    final db = await SqliteService().initializeDB();
+
+    final List<Map<String, Object?>> difficulte = await db.rawQuery("""
+      select *
+      from Niveau
+      natural join Difficulte
+      where idNiveau = ?
+    """, [idNiveau]);
+
+    return Difficulte(
+      id: difficulte[0]['idDifficulte'] as int,
+      nomDifficulte: difficulte[0]['nom'] as String,
+      nbTentatives: difficulte[0]['nbTentatives'] as int,
+      valeurMax: difficulte[0]['valeurMax'] as int,
+    );
+  }
+
+  Future<List<Niveau>> getNiveaux(int idAventure)async{
+    final db = await SqliteService().initializeDB();
+
+    final List<Map<String, Object?>> niveauxIdComplete = await db.rawQuery("""
+      select distinct idNiveau
+      from Partie
+      where idAventure = ? and gagne = ?
+    """, [idAventure, 1]);
+
+    List<int> idNiveauxComplete = [];
+    for(final{'idNiveau': idNiveau as int} in niveauxIdComplete){
+      idNiveauxComplete.add(idNiveau);
+    }
+
+    final List<Map<String, Object?>> niveauMaps = await db.query('Niveau');
+    List<Niveau> niveaux = [];
+    for(final{'idNiveau': id as int, 'palier': palier as int, 'idDifficulte': idDifficulte as int} in niveauMaps){
+      niveaux.add(Niveau(
+        id: id,
+        palier: palier,
+        idDifficulte: idDifficulte,
+        idAventure: 1,
+        complete: idNiveauxComplete.contains(id),
+      ));
+    }
+    return niveaux;
+  }
+
+  Future<List<Partie>> getHistorique() async {
+    final db = await SqliteService().initializeDB();
     
-    return historique;
+    final List<Map<String, Object?>> partieMaps = await db.query('Partie');
+    return [
+      for (final {
+            'idPartie': id as int,
+            'score': score as int,
+            'nbMystere': nbMystere as int,
+            'nbEssaisJoueur': nbEssaisJoueur as int,
+            'gagne': gagne as int,
+            'dateDebut': dateDebut as String,
+            'dateFin': dateFin as String,
+            'idAventure': idAventure as int,
+            'idNiveau': idNiveau as int,
+          } in partieMaps)
+        Partie(
+            id: id,
+            score: score,
+            nbMystere: nbMystere,
+            nbEssaisJoueur: nbEssaisJoueur,
+            gagne: gagne == 1,
+            dateDebut: DateTime.parse(dateDebut),
+            dateFin: DateTime.parse(dateFin),
+            idAventure: idAventure,
+            idNiveau: idNiveau)
+    ];
   }
 }

@@ -1,8 +1,9 @@
 class Partie {
+  
   final int? id;
   final int score;
   final int nbMystere;
-  final int nbEssaisJoueur;
+  late int nbEssaisJoueur;
   bool gagne;
   final DateTime dateDebut;
   final DateTime dateFin;

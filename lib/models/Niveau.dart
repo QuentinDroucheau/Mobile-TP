@@ -1,15 +1,17 @@
 class Niveau{
 
-  final int? id;
+  final int id;
   final int palier;
   final int idDifficulte;
   final int idAventure;
-
+  final bool complete;
+  
   Niveau({
-    this.id,
+    required this.id,
     required this.palier,
     required this.idDifficulte,
     required this.idAventure,
+    this.complete = false
   });
 
   Map<String, Object?> toMap(){

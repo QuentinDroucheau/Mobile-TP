@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tp/models/Partie.dart';
+import 'package:mobile_tp/services/PartieDB.dart';
 import 'package:mobile_tp/services/SqliteService.dart';
 import 'package:mobile_tp/widgets/partie_widget.dart';
 

@@ -13,7 +13,7 @@ class AventureDB {
     final db = await database;
     final id = await db.insert(
       'Aventure',
-      Aventure(nomJoueur: nomJoueur).toMap(),
+      Aventure(id:2, nomJoueur: nomJoueur).toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
@@ -28,7 +28,7 @@ class AventureDB {
         idDifficulte = 3;
       }
       await niveauDB
-          .add(Niveau(palier: i, idDifficulte: idDifficulte, idAventure: id));
+          .add(Niveau(id: 0, palier: i, idDifficulte: idDifficulte, idAventure: id));
     }
 
     return id;
@@ -61,7 +61,7 @@ class AventureDB {
             'idDifficulte': idDifficulte as int,
           } in levelsMaps)
         Niveau(
-            palier: palier, idDifficulte: idDifficulte, idAventure: idAventure)
+          id: 0, palier: palier, idDifficulte: idDifficulte, idAventure: idAventure)
     ];
   }
 
@@ -76,7 +76,7 @@ class AventureDB {
             'idDifficulte': idDifficule as int,
           } in levelsMaps)
         Niveau(
-            palier: palier, idDifficulte: idDifficule, idAventure: idAventure)
+          id: 0, palier: palier, idDifficulte: idDifficule, idAventure: idAventure)
     ];
   }
 
