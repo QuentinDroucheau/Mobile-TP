@@ -1,6 +1,7 @@
 import 'package:mobile_tp/main.dart';
 import 'package:mobile_tp/models/aventure_model.dart';
 import 'package:mobile_tp/models/difficulte_model.dart';
+import 'package:mobile_tp/models/historique_model.dart';
 import 'package:mobile_tp/models/niveau_model.dart';
 import 'package:mobile_tp/models/partie_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -148,7 +149,7 @@ class SqfliteService{
         nbEssaisJoueur: dernierePartie[0]['nbEssaisJoueur'] as int,
         gagne: dernierePartie[0]['gagne'] as int == 1,
         dateDebut: DateTime.parse(dernierePartie[0]['dateDebut'] as String),
-        dateFin: dernierePartie[0]['dateFin'] == null ? DateTime.now() : DateTime.parse(dernierePartie[0]['dateFin'] as String),
+        dateFin: dernierePartie[0]['dateFin'] == null ? null : DateTime.parse(dernierePartie[0]['dateFin'] as String),
         idAventure: dernierePartie[0]['idAventure'] as int,
         idNiveau: dernierePartie[0]['idNiveau'] as int,
       );
@@ -227,33 +228,51 @@ class SqfliteService{
     return niveaux;
   }
 
-  Future<List<Partie>> getHistorique()async{
+  Future<List<Historique>> getHistorique()async{
     final db = await database;
     
-    final List<Map<String, Object?>> partieMaps = await db.query('Partie');
-    return [
-      for(final {
-        'idPartie': id as int,
-        'score': score as int,
-        'nbMystere': nbMystere as int,
-        'nbEssaisJoueur': nbEssaisJoueur as int,
-        'gagne': gagne as int,
-        'dateDebut': dateDebut as String,
-        'dateFin': dateFin as String?,
-        'idAventure': idAventure as int,
-        'idNiveau': idNiveau as int,
-      } in partieMaps)
-        Partie(
-          id: id,
+    final List<Map<String, Object?>> historiqueMaps = await db.rawQuery("""
+      select *
+      from Partie
+      natural join Aventure
+      order by dateDebut desc
+    """);
+
+    List<Historique> historiques = [];
+    for(final{
+      'idPartie': idPartie as int,
+      'score': score as int,
+      'nbMystere': nbMystere as int,
+      'nbEssaisJoueur': nbEssaisJoueur as int,
+      'gagne': gagne as int,
+      'dateDebut': dateDebut as String,
+      'dateFin': dateFin as String?,
+      'idAventure': idAventure as int,
+      'idNiveau': idNiveau as int,
+      'nomJoueur': nomJoueur as String,
+
+    } in historiqueMaps){
+      
+      historiques.add(Historique(
+        partie: Partie(
+          id: idPartie,
           score: score,
           nbMystere: nbMystere,
           nbEssaisJoueur: nbEssaisJoueur,
           gagne: gagne == 1,
           dateDebut: DateTime.parse(dateDebut),
-          dateFin: dateFin is String ? DateTime.parse(dateFin) : null,
+          dateFin: dateFin == null ? null : DateTime.parse(dateFin),
           idAventure: idAventure,
-          idNiveau: idNiveau)
-    ];
+          idNiveau: idNiveau,
+        ),
+        aventure: Aventure(
+          id: idAventure,
+          nomJoueur: nomJoueur,
+        ),
+      ));
+    }
+
+    return historiques;
   }
 
   Future<List<Aventure>> getAventures()async{
@@ -278,6 +297,16 @@ class SqfliteService{
     await db.insert(
       'Aventure',{'nomJoueur': aventure,},
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<Aventure> getAventureById(int idAventure)async{
+    final db = await database;
+
+    final List<Map<String, Object?>> aventureMaps = await db.query('Aventure', where: 'idAventure = ?', whereArgs: [idAventure]);
+    return Aventure(
+      id: aventureMaps[0]['idAventure'] as int,
+      nomJoueur: aventureMaps[0]['nomJoueur'] as String,
     );
   }
 }

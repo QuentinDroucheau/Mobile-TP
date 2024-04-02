@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tp/models/partie_model.dart';
+import 'package:mobile_tp/models/historique_model.dart';
 import 'package:mobile_tp/services/sqflite_service.dart';
 import 'package:mobile_tp/widgets/partie_widget.dart';
 
@@ -13,7 +13,7 @@ class HistoriquePage extends StatefulWidget{
 
 class HistoriquePageState extends State<HistoriquePage>{
 
-  final Future<List<Partie>> parties = Future<List<Partie>>.delayed(
+  final Future<List<Historique>> historique = Future<List<Historique>>.delayed(
     const Duration(seconds: 2),
     () => SqfliteService().getHistorique(),
   );
@@ -25,14 +25,14 @@ class HistoriquePageState extends State<HistoriquePage>{
         title: const Text('Historique'),
       ),
       body: Container(
-        child: FutureBuilder<List<Partie>>(
-          future: parties,
+        child: FutureBuilder<List<Historique>>(
+          future: historique,
           builder: (context, snapshot){
             if(snapshot.hasData) {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index){
-                  return HistoriqueWidget(partie: snapshot.data![index]);
+                  return HistoriqueWidget(historique: snapshot.data![index]);
                 },
               );
             }else if (snapshot.hasError){

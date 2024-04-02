@@ -9,34 +9,43 @@ class HomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Le nombre magique'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: (){
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AventurePage()),
-                );
-              },
-              child: const Text('Jouer'),
+      body: Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background_accueil.jpeg'),
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: (){
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HistoriquePage()),
-                );
-              },
-              child: const Text('Historique'),
-            ),
-          ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Mystery Number',
+                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              const SizedBox(height: 100),
+              ElevatedButton(
+                onPressed: (){
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AventurePage()),
+                  );
+                },
+                child: const Text('Jouer'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HistoriquePage()),
+                  );
+                },
+                child: const Text('Historique'),
+              ),
+            ],
+          ),
         ),
       ),
     );

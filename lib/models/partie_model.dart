@@ -35,18 +35,4 @@ class Partie {
       'idNiveau': idNiveau,
     };
   }
-
-  factory Partie.fromMap(Map<String, dynamic> map) {
-    return Partie(
-      id: map['idPartie'],
-      score: map['score'],
-      nbMystere: map['nbMystere'],
-      nbEssaisJoueur: map['nbEssaisJoueur'],
-      gagne: map['gagne'] == 1,
-      dateDebut: DateTime.parse(map['dateDebut']),
-      dateFin: DateTime.parse(map['dateFin']),
-      idAventure: map['idAventure'],
-      idNiveau: map['idNiveau'],
-    );
-  }
 }

@@ -64,104 +64,122 @@ class GamePageState extends State<GamePage>{
   Widget build(BuildContext context){
     if(widget.partie.gagne){
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Mystery Number'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Vous avez gagné !", style: TextStyle(fontSize: 24),),
-              const SizedBox(height: 20,),
-              ElevatedButton(
-                onPressed: (){
-                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartePage(
-                        aventure: widget.aventure,
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Quitter'),
-              ),
-            ],
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background_accueil.jpeg'),
+              fit: BoxFit.cover,
+            ),
           ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Vous avez gagné !", style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold, color: Colors.white),),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CartePage(
+                          aventure: widget.aventure,
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Quitter'),
+                ),
+              ],
+            ),
+          )
         )
       );
     }else if(!_gameOver){
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Mystery Number'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(_message, 
-                style: const TextStyle(fontSize: 24),
-              ),
-              const SizedBox(height: 20,),
-              Text("Difficulté: ${widget.difficulte.nomDifficulte}"),
-              Text("Tentatives restantes: ${widget.difficulte.nbTentatives - widget.partie.nbEssaisJoueur}"),
-              const SizedBox(height: 20,),
-              TextField(
-                keyboardType: TextInputType.number,
-                onChanged: (value){
-                  setState((){
-                    _nombre = int.tryParse(value) ?? 0;
-                  });
-                },
-              ),
-              const SizedBox(height: 20,),
-              ElevatedButton(
-                onPressed: _check,
-                child: const Text('Valider'),
-              ),
-              const SizedBox(height: 20,),
-              ElevatedButton(
-                child: const Text('Quitter'),
-                onPressed: (){
-                  SqfliteService().addPartie(widget.partie);
-                  Navigator.pop(context);
-                },
-              ),
-              const SizedBox(height: 20,),
-              ElevatedButton(
-                child: const Text('Abandonner'),
-                onPressed: (){
-                  widget.partie.gagne = false;
-                  widget.partie.dateFin = DateTime.now();
-                  SqfliteService().addPartie(widget.partie);
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background_accueil.jpeg'),
+              fit: BoxFit.cover,
+            ),
           ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(_message, 
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                const SizedBox(height: 20,),
+                Text("Difficulté: ${widget.difficulte.nomDifficulte}",
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),),
+                Text("Tentatives restantes: ${widget.difficulte.nbTentatives - widget.partie.nbEssaisJoueur}",
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),),
+                const SizedBox(height: 20,),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  onChanged: (value){
+                    setState((){
+                      _nombre = int.tryParse(value) ?? 0;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                  onPressed: _check,
+                  child: const Text('Valider'),
+                ),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                  child: const Text('Quitter'),
+                  onPressed: (){
+                    SqfliteService().addPartie(widget.partie);
+                    Navigator.pop(context);
+                  },
+                ),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                  child: const Text('Abandonner'),
+                  onPressed: (){
+                    widget.partie.gagne = false;
+                    widget.partie.dateFin = DateTime.now();
+                    SqfliteService().addPartie(widget.partie);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          )
         )
       );
     }else{
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Mystery Number'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(_message, 
-                style: const TextStyle(fontSize: 24),
-              ),
-              const SizedBox(height: 20,),
-              ElevatedButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                },
-                child: const Text('Quitter'),
-              ),
-            ],
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background_accueil.jpeg'),
+              fit: BoxFit.cover,
+            ),
           ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(_message, 
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Quitter'),
+                ),
+              ],
+            ),
+          )
         )
       );
     }

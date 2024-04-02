@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tp/models/partie_model.dart';
+import 'package:mobile_tp/models/historique_model.dart';
 
 class HistoriqueWidget extends StatelessWidget{
 
-  final Partie partie;
+  final Historique historique;
 
   const HistoriqueWidget({
     super.key,
-    required this.partie
+    required this.historique
   });
 
   @override
   Widget build(BuildContext context){
+    Color color = Colors.green;
+    if(historique.partie.dateFin == null){
+      color = Colors.orange;
+    }else if(historique.partie.gagne == false){
+      color = Colors.red;
+    }
     return Container(
       height: 100,
       width: MediaQuery.of(context).size.width - 10,
-      color: partie.gagne ? Colors.green : Colors.red,
+      color: color,
       child: Column(
         children: [
-          Text('Score: ${partie.score}'),
-          Text('Nombre d\'essais: ${partie.nbEssaisJoueur}'),
-          Text('Date de début: ${partie.dateDebut}'),
-          Text('Niveau: ${partie.idNiveau}'),
+          Text('Aventure: ${historique.aventure.nomJoueur}'),
+          Text('Nombre d\'essais: ${historique.partie.nbEssaisJoueur}'),
+          Text('Niveau: ${historique.partie.idNiveau}'),
         ],
       )
     );

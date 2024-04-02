@@ -22,13 +22,4 @@ class Niveau{
       'idAventure': idAventure,
     };
   }
-
-  factory Niveau.fromMap(Map<String, dynamic> map) {
-    return Niveau(
-      id: map['idNiveau'],
-      palier: map['palier'],
-      idDifficulte: map['idDifficulte'],
-      idAventure: map['idAventure'],
-    );
-  }
 }
