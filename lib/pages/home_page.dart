@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'Mystery Number',
+                'Nombre mystère',
                 style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
