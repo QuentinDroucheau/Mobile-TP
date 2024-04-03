@@ -110,7 +110,9 @@ class PageAventureState extends State<AventurePage> {
                         );
                       } else {
                         return const Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
                         );
                       }
                     },

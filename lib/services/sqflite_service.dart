@@ -110,7 +110,7 @@ class SqfliteService{
         // Recrée les tables
         await onCreate(db, newVersion);
       },
-      version: 15,
+      version: 16,
     );
   }
 
